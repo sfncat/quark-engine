@@ -35,22 +35,37 @@ def listDirectory(directory_path: str):
     :param directory_path: the path of a directory
     :return: a list of the contents in the directory
     """
-
+    print("listDirectory " + directory_path)
     return os.listdir(directory_path)
 
 
+# @tool
+# def initRuleObject(rule_path: str):
+#     """
+#     Initialize a rule from the rule path.
+#     """
+#     global rule_checker
+#
+#     rule_checker.append(RuleObject(rule_path))
+#
+#     return "Rule initialized successfully"
+
 @tool
-def initRuleObject(rule_path: str):
-    """
-    Initialize a rule from the rule path.
-    """
-    global rule_checker
+def initRuleObject(rule_path):
+    print("initRuleObject "+rule_path)
+    if os.path.isdir(rule_path):
+        # If rule_path is a directory, iterate through JSON files in it
+        for filename in os.listdir(rule_path):
+            if filename.endswith('.json'):
+                file_path = os.path.join(rule_path, filename)
+                rule_checker.append(RuleObject(file_path))
+    elif os.path.isfile(rule_path) and rule_path.endswith('.json'):
+        # If rule_path is a single JSON file, add it directly
+        rule_checker.append(RuleObject(rule_path))
+    else:
+        raise ValueError(f"Invalid rule path: {rule_path}")
 
-    rule_checker.append(RuleObject(rule_path))
-
-    return "Rule initialized successfully"
-
-
+    return rule_checker
 @tool
 def initQuarkObject(apk_path: str):
     """

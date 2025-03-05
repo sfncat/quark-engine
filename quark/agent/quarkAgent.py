@@ -46,7 +46,7 @@ def __setOrAskAPIKey(apiKey: str, provider: str) -> bool:
     help="API provider (openai or deepseek)",
     type=click.Choice(["openai", "deepseek"]),
     show_default=True,
-    default="openai",
+    default="deepseek",
 )
 def entryPoint(api_key: str, provider: str) -> None:
 
@@ -80,8 +80,8 @@ def entryPoint(api_key: str, provider: str) -> None:
         from langchain_openai import ChatOpenAI
         llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.8)
     else:
-        from langchain_deepseek import ChatDeepseek
-        llm = ChatDeepseek(model="deepseek-chat", temperature=0.8)
+        from langchain_deepseek import ChatDeepSeek
+        llm = ChatDeepSeek(model="deepseek-chat", temperature=0.8)
 
     llmWithTools = llm.bind_tools(agentTools)
 
@@ -143,4 +143,4 @@ def entryPoint(api_key: str, provider: str) -> None:
 
 
 if __name__ == "__main__":
-    entryPoint()  # pylint: disable=E1120
+    entryPoint(provider="deepseek")  # pylint: disable=E1120

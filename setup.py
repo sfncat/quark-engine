@@ -17,13 +17,15 @@ required_requirements = [
     "rzpipe",
     "click",
     "r2pipe==1.8.0",
+    "python-dotenv"
 ]
 
 quarkAgentRequirements = [
-    "langchain==0.2.11",
-    "langchain-core==0.2.23",
-    "langchain-openai==0.1.17",
+    "langchain>=0.3.20",
+    "langchain-core>=0.3.41,<0.4.0",
+    "langchain-openai>=0.3.7,<0.4.0",
     "flask==2.2.5",
+    "langchain-deepseek"
 ]
 
 setuptools.setup(

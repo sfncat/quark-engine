@@ -6,7 +6,7 @@ import json
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 
-from langchain_deepseek import ChatDeepseek
+from langchain_deepseek import ChatDeepSeek
 from langchain.agents import AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
@@ -27,7 +27,7 @@ api_key = os.getenv("DEEPSEEK_API_KEY")
 conversation_history = []
 
 
-llm = ChatDeepseek(model="deepseek-chat", temperature=0.2)
+llm = ChatDeepSeek(model="deepseek-chat", temperature=0.2)
 llm_with_tools = llm.bind_tools(agentTools)
 
 prompt = ChatPromptTemplate.from_messages(
