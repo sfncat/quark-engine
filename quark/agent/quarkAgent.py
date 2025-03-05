@@ -8,23 +8,24 @@ from quark.utils.colors import green, cyan
 
 
 def __printDependencyMissingMessage() -> None:
-    print("Quark Agent requires langchain and its OpenAI integration to work.")
+    print("Quark Agent requires langchain and its API integrations to work.")
     print(
         (
             "Please use the command 'python3 -m pip install"
-            " langchain langchain-core langchain-openai --upgrade'"
+            " langchain langchain-core langchain-openai langchain-deepseek --upgrade'"
             " to install the packages."
         )
     )
 
 
-def __setOrAskAPIKey(apiKey: str) -> bool:
+def __setOrAskAPIKey(apiKey: str, provider: str) -> bool:
+    env_key = f"{provider.upper()}_API_KEY"
     if apiKey:
-        os.environ["OPENAI_API_KEY"] = apiKey
-    elif "OPENAI_API_KEY" not in os.environ:
+        os.environ[env_key] = apiKey
+    elif env_key not in os.environ:
         try:
-            os.environ["OPENAI_API_KEY"] = click.prompt(
-                "Please provide the access key of OpenAI API"
+            os.environ[env_key] = click.prompt(
+                f"Please provide the access key of {provider} API"
             )
         except click.Abort:
             return False
@@ -35,12 +36,19 @@ def __setOrAskAPIKey(apiKey: str) -> bool:
 @click.command()
 @click.option(
     "--api-key",
-    help="Access key of OpenAI API",
+    help="Access key of API provider",
     type=str,
     show_default=False,
     default=None,
 )
-def entryPoint(api_key: str) -> None:
+@click.option(
+    "--provider",
+    help="API provider (openai or deepseek)",
+    type=click.Choice(["openai", "deepseek"]),
+    show_default=True,
+    default="openai",
+)
+def entryPoint(api_key: str, provider: str) -> None:
 
     try:
         from langchain_openai import ChatOpenAI
@@ -64,11 +72,17 @@ def entryPoint(api_key: str) -> None:
     from quark.agent.agentTools import agentTools
     from quark.agent.prompts import SUMMARY_REPORT_FORMAT
 
-    if not __setOrAskAPIKey(api_key):
-        # OpenAI API Key is not provided.
+    if not __setOrAskAPIKey(api_key, provider):
+        # API Key is not provided.
         return
 
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.8)
+    if provider == "openai":
+        from langchain_openai import ChatOpenAI
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.8)
+    else:
+        from langchain_deepseek import ChatDeepseek
+        llm = ChatDeepseek(model="deepseek-chat", temperature=0.8)
+
     llmWithTools = llm.bind_tools(agentTools)
 
     prompt = ChatPromptTemplate.from_messages(
