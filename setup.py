@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 import setuptools
 
 from quark import __version__
 
-with open("README.md") as fh:
+with open("README.md", encoding="utf-8") as fh:
     long_description = fh.read()
 
 required_requirements = [
