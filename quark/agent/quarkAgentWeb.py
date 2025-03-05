@@ -3,6 +3,7 @@ import os
 import re
 import json
 
+from dotenv import load_dotenv
 from flask import Flask, render_template, request
 
 from langchain_openai import ChatOpenAI
@@ -18,7 +19,10 @@ from quark.agent.prompts import PREPROMPT
 
 app = Flask(__name__)
 
-os.environ["OPENAI_API_KEY"] = ''
+load_dotenv()
+
+# Get API key from .env file
+api_key = os.getenv("OPENAI_API_KEY")
 
 conversation_history = []
 
